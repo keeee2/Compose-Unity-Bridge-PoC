@@ -73,3 +73,4 @@ desktop.ini
 # ===== Android Export (UaaL) =====
 # Unity Export 결과물은 별도 관리
 # unityExport/ 폴더는 필요에 따라 포함/제외 결정
+.utmp/

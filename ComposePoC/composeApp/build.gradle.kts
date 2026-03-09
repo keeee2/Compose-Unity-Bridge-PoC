@@ -29,6 +29,7 @@ kotlin {
         androidMain.dependencies {
             implementation(libs.compose.uiToolingPreview)
             implementation(libs.androidx.activity.compose)
+            implementation(project(":unityLibrary"))
         }
         commonMain.dependencies {
             implementation(libs.compose.runtime)
@@ -75,6 +76,5 @@ android {
 
 dependencies {
     debugImplementation(libs.compose.uiTooling)
-    implementation(project(":unityLibrary"))
 }
 
