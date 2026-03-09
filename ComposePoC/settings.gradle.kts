@@ -25,7 +25,11 @@ dependencyResolutionManagement {
             }
         }
         mavenCentral()
+        flatDir {
+            dirs("unityLibrary/libs")
+        }
     }
 }
 
 include(":composeApp")
+include(":unityLibrary")

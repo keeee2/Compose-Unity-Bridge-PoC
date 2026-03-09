@@ -75,5 +75,6 @@ android {
 
 dependencies {
     debugImplementation(libs.compose.uiTooling)
+    implementation(project(":unityLibrary"))
 }
 
