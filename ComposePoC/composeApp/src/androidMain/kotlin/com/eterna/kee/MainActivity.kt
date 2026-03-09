@@ -25,13 +25,14 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        UnityBridge.init(this)
-
         setContent {
             var showUnity by remember { mutableStateOf(false) }
             if (showUnity) {
                 AndroidView<View>(
-                    factory = { UnityBridge.getView()!! },
+                    factory = {
+                        UnityBridge.init(this@MainActivity)
+                        UnityBridge.getView()!!
+                    },
                     modifier = Modifier.fillMaxSize()
                 )
             } else {
