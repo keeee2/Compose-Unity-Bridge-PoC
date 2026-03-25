@@ -60,6 +60,8 @@ android {
     namespace = "com.eterna.kee"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
+    buildFeatures { buildConfig = true }
+
     defaultConfig {
         applicationId = "com.eterna.kee"
         minSdk = libs.versions.android.minSdk.get().toInt()
@@ -67,6 +69,10 @@ android {
         versionCode = 1
         versionName = "1.0"
         ndk { abiFilters += "arm64-v8a" }
+        buildConfigField(
+            "int", "IM_APP_ID",
+            project.findProperty("TENCENT_IM_APP_ID")?.toString() ?: "0"
+        )
     }
     packaging {
         resources {
