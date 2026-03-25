@@ -69,10 +69,15 @@ android {
         versionCode = 1
         versionName = "1.0"
         ndk { abiFilters += "arm64-v8a" }
-        buildConfigField(
-            "int", "IM_APP_ID",
-            project.findProperty("TENCENT_IM_APP_ID")?.toString() ?: "0"
-        )
+
+        val localPropsFile = rootProject.file("local.properties")
+        val appId = if (localPropsFile.exists()) {
+            localPropsFile.readLines()
+                .firstOrNull { it.startsWith("TENCENT_IM_APP_ID") }
+                ?.substringAfter("=")?.trim() ?: "0"
+        } else "0"
+
+        buildConfigField("int", "IM_APP_ID", appId)
     }
     packaging {
         resources {

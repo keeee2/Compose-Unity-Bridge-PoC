@@ -5,6 +5,9 @@ import com.eterna.kee.model.ChatMessage
 import com.tencent.imsdk.v2.*
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
 
 /**
  * 메시지 전송, 히스토리 조회, 실시간 수신.
@@ -42,11 +45,16 @@ class ImMessage {
     suspend fun sendText(groupId: String, text: String): ChatMessage? {
         val msg = V2TIMManager.getMessageManager().createTextMessage(text) ?: return null
         return try {
-            val sent = imAwait<V2TIMMessage> {
+            val sent = suspendCancellableCoroutine<V2TIMMessage> { cont ->
                 V2TIMManager.getMessageManager().sendMessage(
                     msg, null, groupId,
                     V2TIMMessage.V2TIM_PRIORITY_DEFAULT,
-                    false, null, it,
+                    false, null,
+                    object : V2TIMSendCallback<V2TIMMessage> {
+                        override fun onSuccess(result: V2TIMMessage) { if (cont.isActive) cont.resume(result) }
+                        override fun onError(code: Int, desc: String?) { if (cont.isActive) cont.resumeWithException(ImException(code, desc ?: "")) }
+                        override fun onProgress(progress: Int) {}
+                    },
                 )
             }
             ChatMessage.from(sent)

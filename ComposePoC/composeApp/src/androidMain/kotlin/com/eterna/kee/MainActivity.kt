@@ -4,6 +4,7 @@ import android.Manifest
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -23,6 +24,8 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.FileProvider
+import androidx.lifecycle.lifecycleScope
+import com.eterna.kee.im.ImClient
 import com.eterna.kee.media.LocalMediaItem
 import com.eterna.kee.media.LocalMediaType
 import com.eterna.kee.media.VoiceRecorder
@@ -30,6 +33,7 @@ import com.eterna.kee.media.loadRecentMedia
 import com.eterna.kee.ui.chat.*
 import com.eterna.kee.ui.theme.EternaColors
 import com.eterna.kee.ui.theme.EternaTheme
+import com.eterna.kee.BuildConfig
 import kotlinx.coroutines.launch
 import java.io.File
 
@@ -40,6 +44,20 @@ class MainActivity : ComponentActivity() {
 
         UnityBridge.init(this)
         UnityBridge.getView()
+
+        val imClient = ImClient(this)
+        Log.d("IMTest", "appId: ${BuildConfig.IM_APP_ID}")
+        val initOk = imClient.init(appId = BuildConfig.IM_APP_ID)
+        Log.d("IMTest", "init: $initOk")
+
+        lifecycleScope.launch {
+            try {
+                imClient.login("테스트용userId", "테스트용userSig")
+                Log.d("IMTest", "login OK")
+            } catch (e: Exception) {
+                Log.e("IMTest", "login fail: ${e.message}")
+            }
+        }
 
         setContent {
             EternaTheme {
